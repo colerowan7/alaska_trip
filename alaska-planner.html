@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alaska Cruise Planner — Star Princess · May 30–June 7, 2025</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lato', sans-serif; background: #f5efe0; }
+
+    /* ── Hero ── */
+    .hero { background: #1b3d6e; text-align: center; padding: 28px 16px 0; }
+    .h-small  { font-size: 12px; letter-spacing: 7px; color: #a8cfe8; font-weight: 700; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
+    .h-big    { font-family: 'Oswald', sans-serif; font-size: clamp(40px, 8vw, 64px); font-weight: 700; color: #e8f4fd; letter-spacing: 6px; line-height: 1; text-transform: uppercase; }
+    .h-script { font-family: 'Dancing Script', cursive; font-size: clamp(32px, 6vw, 48px); color: #7ec8e3; line-height: 1.1; }
+    .h-diamonds { color: #7ec8e3; font-size: 14px; letter-spacing: 10px; margin-top: 8px; }
+    .h-tag  { font-size: 10px; letter-spacing: 4px; color: #a8cfe8; margin-top: 4px; margin-bottom: 16px; font-family: 'Lato', sans-serif; text-transform: uppercase; }
+
+    .ship-banner { background: #0d2640; padding: 8px 16px; text-align: center; border-top: 2px solid #2a6496; border-bottom: 2px solid #2a6496; }
+    .ship-text   { color: #7ec8e3; font-size: 11px; letter-spacing: 2px; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
+
+    /* ── Countdown ── */
+    .countdown-bar  { background: #1b3d6e; padding: 9px 16px; text-align: center; border-bottom: 1px solid #2a6496; }
+    .countdown-text { color: #7ec8e3; font-size: 11px; font-family: 'Lato', sans-serif; letter-spacing: 1px; }
+    .countdown-num  { color: #fff; font-weight: 700; font-size: 15px; font-family: 'Oswald', sans-serif; }
+
+    .hint { background: #f0e8d0; padding: 6px; text-align: center; font-size: 10px; color: #7a6040; font-family: 'Lato', sans-serif; letter-spacing: 1px; border-bottom: 1px solid #c8b98a; }
+
+    /* ── Day selector row ── */
+    .days-row { display: grid; grid-template-columns: repeat(9, 1fr); background: #0d2640; border-bottom: 3px solid #1b3d6e; }
+    .day-btn  { position: relative; padding: 9px 3px 8px; text-align: center; cursor: pointer; border-right: 1px solid #2a5a8c; border-top: none; border-bottom: none; border-left: none; background: #1b3d6e; width: 100%; transition: background 0.15s; }
+    .day-btn:last-child { border-right: none; }
+    .day-btn:hover  { background: #2a5a8c; }
+    .day-btn.active { background: #f5efe0; }
+    .day-btn.active .db-date,
+    .day-btn.active .db-city,
+    .day-btn.active .db-icon { color: #1b3d6e; }
+    .db-date { font-size: 7.5px; font-weight: 700; color: #a8cfe8; letter-spacing: 0.5px; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
+    .db-icon { font-size: 16px; color: #7ec8e3; margin: 3px 0 2px; display: block; }
+    .db-city { font-size: 8.5px; font-weight: 700; color: #e8f4fd; font-family: 'Oswald', sans-serif; text-transform: uppercase; line-height: 1.2; }
+
+    /* progress ring */
+    .progress-ring { position: absolute; top: 4px; right: 4px; }
+    .pring-svg  { width: 14px; height: 14px; }
+    .pring-bg   { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 2; }
+    .pring-fill { fill: none; stroke: #7ec8e3; stroke-width: 2; stroke-linecap: round; transition: stroke-dashoffset 0.4s; transform: rotate(-90deg); transform-origin: 7px 7px; }
+    .day-btn.active .pring-bg   { stroke: rgba(27,61,110,0.25); }
+    .day-btn.active .pring-fill { stroke: #1b3d6e; }
+
+    /* ── Detail panel ── */
+    .detail-panel { background: #f5efe0; display: none; }
+    .detail-panel.open { display: block; }
+    .dp-header { padding: 14px 18px 10px; border-bottom: 2px solid #c8b98a; display: flex; align-items: center; gap: 14px; background: #f0e8d0; flex-wrap: wrap; }
+    .dp-icon-big { font-size: 30px; color: #1b3d6e; }
+    .dp-title    { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: #1b3d6e; text-transform: uppercase; letter-spacing: 2px; }
+    .dp-subtitle { font-size: 10px; color: #7a6040; letter-spacing: 1px; font-family: 'Lato', sans-serif; text-transform: uppercase; margin-top: 2px; }
+    .dp-progress-wrap { margin-left: auto; text-align: right; }
+    .dp-progress-label { font-size: 9px; color: #7a6040; font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+    .dp-progress-num   { font-size: 20px; font-family: 'Oswald', sans-serif; color: #1b3d6e; font-weight: 700; line-height: 1; }
+
+    .dp-body { display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 640px) { .dp-body { grid-template-columns: 1fr; } }
+    .dp-left  { padding: 14px 16px; border-right: 1px solid #c8b98a; }
+    .dp-right { padding: 14px 16px; }
+
+    .section-head { font-family: 'Oswald', sans-serif; font-size: 10px; font-weight: 700; color: #1b3d6e; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #c8b98a; display: flex; align-items: center; gap: 6px; }
+    .section-head + * { }
+
+    /* Event cards */
+    .ev       { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
+    .ev-time  { font-family: 'Oswald', sans-serif; font-size: 9px; font-weight: 600; color: #888; min-width: 52px; padding-top: 4px; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0; }
+    .ev-card  { flex: 1; padding: 7px 9px 7px 11px; border-radius: 3px; border-left: 3px solid #ccc; }
+    .ev-card.travel    { background: #ddeeff; border-left-color: #1a6eb5; }
+    .ev-card.onboard   { background: #d8f0e2; border-left-color: #1e8c4a; }
+    .ev-card.excursion { background: #ece5f8; border-left-color: #6b3ec4; }
+    .ev-card.dinner    { background: #fde4ef; border-left-color: #c43e7a; }
+    .ev-card.misc      { background: #fef3d0; border-left-color: #c48e00; }
+    .ev-title { font-weight: 700; font-size: 11px; line-height: 1.3; }
+    .ev-card.travel    .ev-title { color: #0c3460; }
+    .ev-card.onboard   .ev-title { color: #0a4020; }
+    .ev-card.excursion .ev-title { color: #3a1680; }
+    .ev-card.dinner    .ev-title { color: #6e1040; }
+    .ev-card.misc      .ev-title { color: #5a3e00; }
+    .ev-note { font-size: 9px; font-style: italic; margin-top: 2px; opacity: 0.8; }
+    .ev-card.travel    .ev-note { color: #0c3460; }
+    .ev-card.onboard   .ev-note { color: #0a4020; }
+    .ev-card.excursion .ev-note { color: #3a1680; }
+    .ev-card.dinner    .ev-note { color: #6e1040; }
+    .ev-card.misc      .ev-note { color: #5a3e00; }
+
+    /* Packing tags */
+    .packing-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+    .pack-tag { background: #e8e0cc; color: #5a4a2a; font-size: 9px; padding: 3px 9px; border-radius: 12px; font-family: 'Lato', sans-serif; display: flex; align-items: center; gap: 3px; }
+
+    /* To-do list */
+    .todo-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+    .todo-item { display: flex; align-items: center; gap: 7px; padding: 6px 8px; background: #fff; border-radius: 4px; border: 0.5px solid #c8b98a; }
+    .todo-check { width: 15px; height: 15px; border-radius: 3px; border: 1.5px solid #c8b98a; cursor: pointer; appearance: none; -webkit-appearance: none; flex-shrink: 0; background: #fff; transition: all 0.15s; position: relative; }
+    .todo-check:checked { background: #1b3d6e; border-color: #1b3d6e; }
+    .todo-check:checked::after { content: '✓'; position: absolute; top: -2px; left: 1px; font-size: 10px; color: #fff; font-weight: 700; }
+    .todo-label { font-size: 11px; color: #3a2a10; flex: 1; cursor: pointer; font-family: 'Lato', sans-serif; }
+    .todo-label.done { text-decoration: line-through; color: #aaa; }
+    .todo-del { background: none; border: none; cursor: pointer; color: #ccc; font-size: 12px; padding: 0 2px; line-height: 1; transition: color 0.15s; }
+    .todo-del:hover { color: #c43e7a; }
+
+    .add-todo { display: flex; gap: 6px; margin-top: 8px; }
+    .add-todo input { flex: 1; font-size: 11px; padding: 6px 9px; border: 1px solid #c8b98a; border-radius: 4px; background: #fff; font-family: 'Lato', sans-serif; color: #3a2a10; outline: none; }
+    .add-todo input:focus { border-color: #1b3d6e; }
+    .add-todo button { background: #1b3d6e; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; font-size: 10px; cursor: pointer; font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; transition: background 0.15s; }
+    .add-todo button:hover { background: #2a5a8c; }
+
+    /* Notes */
+    .notes-area { width: 100%; min-height: 100px; font-size: 11px; font-family: 'Lato', sans-serif; padding: 9px; border: 1px solid #c8b98a; border-radius: 4px; background: #fffdf5; color: #3a2a10; resize: vertical; outline: none; line-height: 1.6; }
+    .notes-area:focus { border-color: #1b3d6e; }
+    .save-indicator { font-size: 9px; color: #1e8c4a; margin-top: 4px; height: 13px; font-family: 'Lato', sans-serif; opacity: 0; transition: opacity 0.3s; }
+    .save-indicator.show { opacity: 1; }
+
+    /* Empty state */
+    .no-sel { padding: 40px; text-align: center; color: #9a8a6a; font-size: 13px; font-style: italic; font-family: 'Lato', sans-serif; }
+
+    /* Legend */
+    .leg-bar { background: #0d2640; padding: 8px 12px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; border-top: 2px solid #2a6496; }
+    .leg { display: flex; align-items: center; gap: 4px; font-size: 8px; color: #a8cfe8; font-family: 'Lato', sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+    .ls  { width: 3px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+    /* Footer */
+    .footer { background: #1b3d6e; padding: 12px 16px 18px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .fw { background: #8B4513; color: #fff8e1; font-size: 9px; letter-spacing: 3px; padding: 6px 14px; font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; border-radius: 2px; }
+
+    /* section spacing */
+    .mt10 { margin-top: 10px; }
+    .mb0  { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="h-small">10 Day</div>
+  <div class="h-big">ALASKAN</div>
+  <div class="h-script">Vacation</div>
+  <div class="h-diamonds">✦ &nbsp; ✦ &nbsp; ✦</div>
+  <div class="h-tag">Adventure &nbsp;✦&nbsp; Scenery &nbsp;✦&nbsp; Memories</div>
+
+  <!-- Illustrated SVG mountain / glacier / ship scene -->
+  <svg viewBox="0 0 1200 100" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;" aria-hidden="true">
+    <rect width="1200" height="100" fill="#1b3d6e"/>
+    <polygon points="0,80 80,40 160,68 240,22 340,60 440,10 560,54 660,8 780,48 880,6 1000,44 1100,14 1200,36 1200,100 0,100" fill="#1e6632"/>
+    <polygon points="0,88 60,64 130,80 210,52 290,74 390,36 500,68 600,28 720,64 820,30 940,62 1040,38 1140,58 1200,46 1200,100 0,100" fill="#145228"/>
+    <polygon points="0,94 100,78 200,90 320,72 440,88 560,70 680,84 800,70 920,86 1040,72 1140,82 1200,76 1200,100 0,100" fill="#0d3d1e"/>
+    <!-- clouds -->
+    <ellipse cx="120" cy="32" rx="70" ry="26" fill="#c8dff0" opacity="0.18"/>
+    <ellipse cx="120" cy="28" rx="50" ry="18" fill="#e0eefa" opacity="0.14"/>
+    <ellipse cx="980" cy="24" rx="80" ry="28" fill="#c8dff0" opacity="0.16"/>
+    <ellipse cx="980" cy="20" rx="58" ry="20" fill="#e0eefa" opacity="0.12"/>
+    <!-- ship silhouette -->
+    <rect x="860" y="68" width="160" height="24" rx="2" fill="#e8f0f8" opacity="0.88"/>
+    <rect x="875" y="62" width="134" height="10" rx="2" fill="#d0e0f0" opacity="0.85"/>
+    <rect x="896" y="54" width="96" height="12" rx="2" fill="#c0d4ec" opacity="0.82"/>
+    <rect x="918" y="46" width="56" height="11" rx="2" fill="#b0c8e8" opacity="0.78"/>
+    <rect x="860" y="92" width="160" height="4" fill="#1b5e8a" opacity="0.5"/>
+  </svg>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SHIP BANNER
+════════════════════════════════════════════ -->
+<div class="ship-banner">
+  <div class="ship-text">
+    <i class="ti ti-ship" aria-hidden="true" style="font-size:12px;vertical-align:-1px;margin-right:6px;"></i>
+    Star Princess &nbsp;·&nbsp; Pier 91, Seattle &nbsp;·&nbsp; May 30 – June 7, 2025
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     COUNTDOWN
+════════════════════════════════════════════ -->
+<div class="countdown-bar">
+  <span class="countdown-text" id="countdown-text">Loading...</span>
+</div>
+
+<div class="hint">
+  <i class="ti ti-hand-click" aria-hidden="true" style="font-size:11px;vertical-align:-1px;margin-right:5px;"></i>
+  Tap a day to view the schedule, manage to-dos &amp; add notes
+</div>
+
+<!-- ═══════════════════════════════════════════
+     DAY SELECTOR
+════════════════════════════════════════════ -->
+<div class="days-row" id="days-row"></div>
+
+<!-- ═══════════════════════════════════════════
+     DETAIL PANEL
+════════════════════════════════════════════ -->
+<div class="detail-panel" id="detail-panel">
+  <div class="no-sel" id="no-sel">Select a day above to view its schedule, to-dos &amp; notes</div>
+  <div id="dp-content" style="display:none;">
+
+    <div class="dp-header">
+      <div class="dp-icon-big" id="dp-icon"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="dp-title" id="dp-title"></div>
+        <div class="dp-subtitle" id="dp-subtitle"></div>
+      </div>
+      <div class="dp-progress-wrap">
+        <div class="dp-progress-label">To-dos</div>
+        <div class="dp-progress-num" id="dp-progress-num"></div>
+      </div>
+    </div>
+
+    <div class="dp-body">
+      <!-- LEFT: schedule + packing -->
+      <div class="dp-left">
+        <div class="section-head">
+          <i class="ti ti-calendar-event" aria-hidden="true" style="font-size:13px;"></i>Schedule
+        </div>
+        <div id="dp-events"></div>
+
+        <div class="section-head mt10">
+          <i class="ti ti-backpack" aria-hidden="true" style="font-size:13px;"></i>Pack / Bring
+        </div>
+        <div class="packing-tags" id="dp-packing"></div>
+      </div>
+
+      <!-- RIGHT: todos + notes -->
+      <div class="dp-right">
+        <div class="section-head">
+          <i class="ti ti-checkbox" aria-hidden="true" style="font-size:13px;"></i>To-Do List
+        </div>
+        <div class="todo-list" id="dp-todos"></div>
+        <div class="add-todo">
+          <input type="text" id="todo-input" placeholder="Add a to-do…" maxlength="100" />
+          <button onclick="addTodo()">Add</button>
+        </div>
+
+        <div class="section-head mt10">
+          <i class="ti ti-notes" aria-hidden="true" style="font-size:13px;"></i>Notes
+        </div>
+        <textarea class="notes-area" id="notes-area" placeholder="Jot down anything for this day — ideas, questions, reminders, what to wear…"></textarea>
+        <div class="save-indicator" id="save-indicator">
+          <i class="ti ti-check" style="font-size:9px;"></i> Saved
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     LEGEND + FOOTER
+════════════════════════════════════════════ -->
+<div class="leg-bar">
+  <div class="leg"><div class="ls" style="background:#1a6eb5;"></div>Travel</div>
+  <div class="leg"><div class="ls" style="background:#1e8c4a;"></div>On Board</div>
+  <div class="leg"><div class="ls" style="background:#6b3ec4;"></div>Excursion</div>
+  <div class="leg"><div class="ls" style="background:#c43e7a;"></div>Dinner</div>
+  <div class="leg"><div class="ls" style="background:#c48e00;"></div>Hotel / Misc</div>
+</div>
+<div class="footer">
+  <div class="fw">Explore</div>
+  <div class="fw">Relax</div>
+  <div class="fw">Enjoy</div>
+  <div class="fw">Unforgettable</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     DATA + LOGIC
+════════════════════════════════════════════ -->
+<script>
+// ── Trip Data ──────────────────────────────────────────────────────────────
+const DAYS = [
+  {
+    date: 'Sat 5/30', city: 'Seattle', icon: 'ti-plane-arrival', subtitle: 'Arrival Day',
+    packing: ['Passport', 'Confirmation emails', 'Comfy travel clothes', 'Snacks for flight', 'Earbuds'],
+    defaultTodos: ['Confirm hotel check-in', 'Download offline maps for Seattle', 'Pack carry-on only', 'Set flight alarms'],
+    events: [
+      { time: '10:20 AM', type: 'travel',  icon: 'ti-plane',              title: 'Flight CRP → DFW',        note: '10:20–11:56 AM' },
+      { time: '1:14 PM',  type: 'travel',  icon: 'ti-plane',              title: 'Flight DFW → SEA',        note: '1:14–3:42 PM · 1 hr layover DFW' },
+      { time: '~4:00 PM', type: 'misc',    icon: 'ti-car',                title: 'Uber to hotel',           note: 'Check in' },
+      { time: 'Evening',  type: 'misc',    icon: 'ti-building-skyscraper',title: 'Evening in Seattle',      note: 'Explore the city' },
+    ]
+  },
+  {
+    date: 'Sun 5/31', city: 'Seattle', icon: 'ti-anchor', subtitle: 'Embarkation Day',
+    packing: ['Boarding documents', 'Cruise card', 'Luggage tags', 'Change of clothes in carry-on', 'Sunscreen'],
+    defaultTodos: ['Print / download boarding pass', 'Attach luggage tags before leaving hotel', 'Check muster station assignment', 'Download Princess app'],
+    events: [
+      { time: 'Morning',   type: 'misc',    icon: 'ti-coffee',        title: 'Breakfast at hotel',              note: 'Get ready' },
+      { time: '~10:00 AM', type: 'misc',    icon: 'ti-car',           title: 'Uber to Pier 91',                 note: '' },
+      { time: '11:00 AM',  type: 'onboard', icon: 'ti-ship',          title: 'Embarkation — Star Princess',     note: '11:00–11:30 AM · Pier 91' },
+      { time: '11:30 AM',  type: 'onboard', icon: 'ti-door-enter',    title: 'Tour ship & check in to cabin',   note: 'Get settled, find muster station' },
+      { time: '3:00 PM',   type: 'onboard', icon: 'ti-anchor',        title: 'Ship embarks!',                   note: '' },
+      { time: '5:00 PM',   type: 'dinner',  icon: 'ti-tools-kitchen-2',title: 'Dinner @ Aurora',               note: '' },
+      { time: 'Evening',   type: 'onboard', icon: 'ti-stars',         title: 'Evening activities',              note: 'Check Ship Patter Sheet' },
+    ]
+  },
+  {
+    date: 'Mon 6/1', city: 'At Sea', icon: 'ti-waves', subtitle: 'Full Day at Sea',
+    packing: ['Swimsuit', 'Sunscreen', 'Book / Kindle', 'Sea-sickness meds (just in case)', 'Light layers'],
+    defaultTodos: ['Book Craig massage time', 'Review Patter Sheet for evening shows', 'Check excursion times for Ketchikan', 'Decide: Celestial or Butcher\'s Block?'],
+    events: [
+      { time: 'Morning',   type: 'misc',    icon: 'ti-massage',          title: 'Craig Massage',              note: 'Time TBD — book ahead' },
+      { time: 'Afternoon', type: 'onboard', icon: 'ti-ship',             title: 'Full day at sea',            note: 'Explore ship, pools, activities' },
+      { time: '5:20 PM',   type: 'dinner',  icon: 'ti-tools-kitchen-2',  title: 'Dinner @ Celestial',         note: 'Possible change to Butcher\'s Block' },
+      { time: 'Evening',   type: 'onboard', icon: 'ti-stars',            title: 'Evening activities',         note: 'Check Ship Patter Sheet' },
+    ]
+  },
+  {
+    date: 'Tue 6/2', city: 'Ketchikan', icon: 'ti-map-pin', subtitle: "Alaska's First City",
+    packing: ['Rain jacket', 'Waterproof shoes', 'Camera', 'Cash for tips', 'Layers'],
+    defaultTodos: ['Confirm Lumberjack Show tickets', 'Bring cash for port shops', 'Charge camera battery', 'Note ship departure time'],
+    events: [
+      { time: '6:30 AM',  type: 'excursion', icon: 'ti-anchor',           title: 'Arrive Ketchikan, Alaska',    note: '' },
+      { time: '7:00 AM',  type: 'excursion', icon: 'ti-camera',           title: 'Photos around port',          note: '7:00–10:30 AM' },
+      { time: '11:00 AM', type: 'excursion', icon: 'ti-axe',              title: 'Lumberjack Show',             note: '11:00 AM–12:30 PM' },
+      { time: '12:30 PM', type: 'excursion', icon: 'ti-walk',             title: 'Walk around town',            note: '12:30–3:00 PM' },
+      { time: '4:50 PM',  type: 'dinner',    icon: 'ti-tools-kitchen-2',  title: 'Dinner @ Umai Teppanyaki',    note: '' },
+      { time: 'Evening',  type: 'onboard',   icon: 'ti-stars',            title: 'Evening activities',          note: 'Check Ship Patter Sheet' },
+    ]
+  },
+  {
+    date: 'Wed 6/3', city: 'Juneau', icon: 'ti-mountain', subtitle: "Alaska's Capital",
+    packing: ['Warm layers', 'Binoculars', 'Rain gear', 'Good walking shoes', 'Camera'],
+    defaultTodos: ['Decide: dinner in Juneau or on ship?', 'Look up Mendenhall Glacier options', 'Note ship curfew — 8:30 PM', 'Bring binoculars for glacier views'],
+    events: [
+      { time: '5:00 AM',  type: 'excursion', icon: 'ti-mountain',         title: 'Glacier Nat\'l Park views',  note: '5:00–9:00 AM · Stay on boat' },
+      { time: '12:30 PM', type: 'excursion', icon: 'ti-map-2',            title: 'Juneau, Alaska — in port',   note: '12:30–9:00 PM' },
+      { time: '5:00 PM',  type: 'dinner',    icon: 'ti-tools-kitchen-2',  title: 'Dinner @ Aurora or Juneau',  note: 'TBD — decide before docking' },
+      { time: '8:30 PM',  type: 'onboard',   icon: 'ti-ship',             title: 'Board ship',                 note: "Don't miss it!" },
+      { time: 'Evening',  type: 'onboard',   icon: 'ti-stars',            title: 'Evening activities',         note: 'Check Ship Patter Sheet' },
+    ]
+  },
+  {
+    date: 'Thu 6/4', city: 'Skagway', icon: 'ti-train', subtitle: 'Gateway to the Klondike',
+    packing: ['Warmest jacket', 'Sturdy boots', 'Gloves', 'Camera', 'Cash for tips'],
+    defaultTodos: ['Confirm Musher\'s Camp booking', 'Bring tip cash for guide', 'Wear warmest layers', 'Note ship departure: 4:30 PM', 'Clarify dinner: The Catch or Crown Grill?'],
+    events: [
+      { time: '6:00 AM',  type: 'excursion', icon: 'ti-anchor',           title: 'Skagway, Alaska — in port',  note: 'All day' },
+      { time: '10:30 AM', type: 'excursion', icon: 'ti-paw',              title: "Musher's Camp",              note: '10:30 AM–1:45 PM' },
+      { time: '4:30 PM',  type: 'onboard',   icon: 'ti-ship',             title: 'Board ship',                 note: '' },
+      { time: '6:20 PM',  type: 'dinner',    icon: 'ti-tools-kitchen-2',  title: 'Dinner @ The Catch',         note: '' },
+      { time: '7:20 PM',  type: 'dinner',    icon: 'ti-tools-kitchen-2',  title: 'Dinner @ Crown Grill',       note: 'Confirm which is the right one' },
+      { time: 'Evening',  type: 'onboard',   icon: 'ti-stars',            title: 'Evening activities',         note: 'Check Ship Patter Sheet' },
+    ]
+  },
+  {
+    date: 'Fri 6/5', city: 'At Sea', icon: 'ti-waves', subtitle: 'Full Day at Sea',
+    packing: ['Swimsuit', 'Good book', 'Formal outfit if formal night', 'Sunscreen', 'Comfy shoes'],
+    defaultTodos: ['Book Craig massage time', 'Pack bags tonight for disembarkation', 'Check out any spa deals', 'Review Victoria arrival time'],
+    events: [
+      { time: 'Morning',  type: 'misc',    icon: 'ti-massage',           title: 'Craig Massage',           note: 'Time TBD — book ahead' },
+      { time: 'All day',  type: 'onboard', icon: 'ti-ship',              title: 'Relaxing day at sea',     note: 'Pools, activities, shows' },
+      { time: 'Evening',  type: 'onboard', icon: 'ti-stars',             title: 'Evening activities',      note: 'Check Ship Patter Sheet' },
+    ]
+  },
+  {
+    date: 'Sat 6/6', city: 'Victoria', icon: 'ti-building-castle', subtitle: 'British Columbia, Canada',
+    packing: ['Light jacket', 'Walking shoes', 'Camera', 'Passport', 'Evening wear'],
+    defaultTodos: ['Note: in port 7 PM–midnight only', 'Research Victoria highlights in advance', 'Confirm 11:30 PM ship boarding', 'Check passport for Canada re-entry'],
+    events: [
+      { time: '5:00 PM',  type: 'dinner',    icon: 'ti-tools-kitchen-2', title: 'Dinner @ Aurora',         note: 'On ship before heading into port' },
+      { time: '7:00 PM',  type: 'excursion', icon: 'ti-building-castle', title: 'Victoria, Canada',        note: '7:00 PM–11:59 PM in port' },
+      { time: '11:30 PM', type: 'onboard',   icon: 'ti-ship',            title: 'Board ship',              note: '' },
+    ]
+  },
+  {
+    date: 'Sun 6/7', city: 'Seattle', icon: 'ti-plane-departure', subtitle: 'Disembarkation Day',
+    packing: ['Everything packed the night before', 'Carry-on with flight essentials', 'Flight documents', 'Snacks'],
+    defaultTodos: ['Pack all bags the night before', 'Set early alarm', 'Confirm Uber to airport', 'Decide what to do with 6hr gap', 'Check flight status morning of'],
+    events: [
+      { time: '7:00 AM',  type: 'misc',   icon: 'ti-anchor',   title: 'Dock in Seattle',           note: '' },
+      { time: 'Morning',  type: 'misc',   icon: 'ti-door-exit',title: 'Disembark & transfer',       note: '' },
+      { time: 'All day',  type: 'misc',   icon: 'ti-clock-question', title: '~6 hours until flight', note: 'Uber somewhere — TBD' },
+      { time: '3:45 PM',  type: 'travel', icon: 'ti-plane',    title: 'Flight SEA → DFW',          note: '3:45–9:50 PM' },
+      { time: '~10:00 PM',type: 'travel', icon: 'ti-plane',    title: 'Layover DFW',               note: '40 minutes' },
+      { time: '10:30 PM', type: 'travel', icon: 'ti-plane',    title: 'Flight DFW → CRP',          note: '10:30–11:59 PM · Home!' },
+    ]
+  },
+];
+
+// ── Storage helpers ────────────────────────────────────────────────────────
+// Swap these two functions for real API calls when connecting a backend DB.
+const store = {
+  get(key) {
+    try { return JSON.parse(localStorage.getItem('alaska_' + key) || 'null'); }
+    catch(e) { return null; }
+  },
+  set(key, val) {
+    try { localStorage.setItem('alaska_' + key, JSON.stringify(val)); }
+    catch(e) { /* quota exceeded or private mode */ }
+  }
+};
+
+function getTodos(i) {
+  const saved = store.get('todos_' + i);
+  if (saved) return saved;
+  return DAYS[i].defaultTodos.map(t => ({ text: t, done: false, id: Date.now() + Math.random() }));
+}
+function saveTodos(i, todos) { store.set('todos_' + i, todos); }
+function getNote(i)          { return store.get('note_' + i) || ''; }
+function saveNote(i, txt)    { store.set('note_' + i, txt); }
+
+// ── State ──────────────────────────────────────────────────────────────────
+let activeDay = -1;
+let saveTimer = null;
+
+// ── Progress ───────────────────────────────────────────────────────────────
+function getProgress(i) {
+  const todos = getTodos(i);
+  if (!todos.length) return { done: 0, total: 0 };
+  return { done: todos.filter(t => t.done).length, total: todos.length };
+}
+
+function circumference(r) { return 2 * Math.PI * r; }
+
+function renderRing(btn, i) {
+  const p = getProgress(i);
+  const r = 5;
+  const c = circumference(r);
+  const pct    = p.total ? p.done / p.total : 0;
+  const offset = c * (1 - pct);
+  const fill   = btn.querySelector('.pring-fill');
+  fill.style.strokeDasharray  = c;
+  fill.style.strokeDashoffset = offset;
+}
+
+// ── Build day buttons ──────────────────────────────────────────────────────
+function buildDayButtons() {
+  const row = document.getElementById('days-row');
+  DAYS.forEach((d, i) => {
+    const btn = document.createElement('button');
+    btn.className  = 'day-btn';
+    btn.dataset.idx = i;
+    const r = 5;
+    const c = circumference(r);
+    btn.innerHTML = `
+      <div class="progress-ring">
+        <svg class="pring-svg" viewBox="0 0 14 14" aria-hidden="true">
+          <circle class="pring-bg"   cx="7" cy="7" r="${r}"/>
+          <circle class="pring-fill" cx="7" cy="7" r="${r}"
+            stroke-dasharray="${c}" stroke-dashoffset="${c}"/>
+        </svg>
+      </div>
+      <div class="db-date">${d.date}</div>
+      <i class="ti ${d.icon} db-icon" aria-hidden="true"></i>
+      <div class="db-city">${d.city}</div>`;
+    btn.onclick = () => selectDay(i);
+    row.appendChild(btn);
+    renderRing(btn, i);
+  });
+}
+
+// ── Select / deselect a day ────────────────────────────────────────────────
+function selectDay(i) {
+  const btns = document.querySelectorAll('.day-btn');
+  if (activeDay === i) {
+    btns[i].classList.remove('active');
+    document.getElementById('detail-panel').classList.remove('open');
+    activeDay = -1;
+    return;
+  }
+  if (activeDay >= 0) btns[activeDay].classList.remove('active');
+  activeDay = i;
+  btns[i].classList.add('active');
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('no-sel').style.display    = 'none';
+  document.getElementById('dp-content').style.display = 'block';
+  renderDetail(i);
+  // Scroll panel into view smoothly
+  document.getElementById('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── Render full detail for a day ───────────────────────────────────────────
+function renderDetail(i) {
+  const d = DAYS[i];
+  document.getElementById('dp-icon').innerHTML    = `<i class="ti ${d.icon}" aria-hidden="true"></i>`;
+  document.getElementById('dp-title').textContent    = d.city;
+  document.getElementById('dp-subtitle').textContent = d.date + ' · ' + d.subtitle;
+
+  // Schedule
+  document.getElementById('dp-events').innerHTML = d.events.map(ev => `
+    <div class="ev">
+      <div class="ev-time">${ev.time}</div>
+      <div class="ev-card ${ev.type}">
+        <div class="ev-title">
+          <i class="ti ${ev.icon}" aria-hidden="true"
+             style="font-size:11px;margin-right:4px;vertical-align:-1px;"></i>${ev.title}
+        </div>
+        ${ev.note ? `<div class="ev-note">${ev.note}</div>` : ''}
+      </div>
+    </div>`).join('');
+
+  // Packing
+  document.getElementById('dp-packing').innerHTML = d.packing.map(p => `
+    <span class="pack-tag">
+      <i class="ti ti-check" aria-hidden="true" style="font-size:9px;"></i>${p}
+    </span>`).join('');
+
+  // Todos
+  renderTodos(i);
+
+  // Notes
+  const noteArea = document.getElementById('notes-area');
+  noteArea.value  = getNote(i);
+  noteArea.oninput = () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      saveNote(i, noteArea.value);
+      const ind = document.getElementById('save-indicator');
+      ind.classList.add('show');
+      setTimeout(() => ind.classList.remove('show'), 2000);
+    }, 600);
+  };
+
+  // Wire Enter key on todo input
+  document.getElementById('todo-input').onkeydown = e => { if (e.key === 'Enter') addTodo(); };
+}
+
+// ── Render todo list ───────────────────────────────────────────────────────
+function renderTodos(i) {
+  const todos = getTodos(i);
+  const p     = getProgress(i);
+  document.getElementById('dp-progress-num').textContent = p.done + '/' + p.total;
+
+  const list = document.getElementById('dp-todos');
+  list.innerHTML = '';
+  todos.forEach((t, ti) => {
+    const div = document.createElement('div');
+    div.className = 'todo-item';
+    const uid = 'tc_' + i + '_' + ti;
+    div.innerHTML = `
+      <input type="checkbox" class="todo-check" id="${uid}" ${t.done ? 'checked' : ''}/>
+      <label for="${uid}" class="todo-label${t.done ? ' done' : ''}">${escHtml(t.text)}</label>
+      <button class="todo-del" title="Remove">
+        <i class="ti ti-x" aria-hidden="true" style="font-size:10px;"></i>
+      </button>`;
+    div.querySelector('.todo-check').onchange = function() {
+      todos[ti].done = this.checked;
+      saveTodos(i, todos);
+      renderTodos(i);
+      renderRing(document.querySelectorAll('.day-btn')[i], i);
+    };
+    div.querySelector('.todo-del').onclick = () => {
+      todos.splice(ti, 1);
+      saveTodos(i, todos);
+      renderTodos(i);
+      renderRing(document.querySelectorAll('.day-btn')[i], i);
+    };
+    list.appendChild(div);
+  });
+}
+
+// ── Add a todo ─────────────────────────────────────────────────────────────
+function addTodo() {
+  if (activeDay < 0) return;
+  const input = document.getElementById('todo-input');
+  const txt   = input.value.trim();
+  if (!txt) return;
+  const todos = getTodos(activeDay);
+  todos.push({ text: txt, done: false, id: Date.now() });
+  saveTodos(activeDay, todos);
+  input.value = '';
+  renderTodos(activeDay);
+  renderRing(document.querySelectorAll('.day-btn')[activeDay], activeDay);
+}
+
+// ── Countdown ──────────────────────────────────────────────────────────────
+function setCountdown() {
+  const depart  = new Date('2025-05-30T10:20:00');
+  const tripEnd = new Date('2025-06-07T23:59:00');
+  const now     = new Date();
+  const el      = document.getElementById('countdown-text');
+  const diff    = depart - now;
+
+  if (diff > 0) {
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hrs  = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    el.innerHTML = `<span class="countdown-num">${days}</span> days
+      <span class="countdown-num">${hrs}</span> hrs
+      <span class="countdown-num">${mins}</span> min until departure &nbsp;✦&nbsp; Start planning!`;
+  } else if (now <= tripEnd) {
+    const dayNum = Math.floor((now - depart) / (1000 * 60 * 60 * 24)) + 1;
+    const port   = DAYS[Math.min(dayNum - 1, 8)];
+    el.innerHTML = `<span class="countdown-num">Day ${dayNum} of 9</span>
+      &nbsp;—&nbsp; You're in <span class="countdown-num">${port.city}</span>! Enjoy every moment.`;
+  } else {
+    el.innerHTML = `What an adventure! The Alaska cruise is a wonderful memory. 🚢`;
+  }
+}
+
+// ── Utility ────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+buildDayButtons();
+setCountdown();
+setInterval(setCountdown, 60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alaska Cruise Planner — Star Princess · May 30–June 7, 2025</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="h-small">10 Day</div>
+  <div class="h-big">ALASKAN</div>
+  <div class="h-script">Vacation</div>
+  <div class="h-diamonds">✦ &nbsp; ✦ &nbsp; ✦</div>
+  <div class="h-tag">Adventure &nbsp;✦&nbsp; Scenery &nbsp;✦&nbsp; Memories</div>
+
+  <div class="h-credit">Photo: Benton Sherman / Unsplash</div>
+  <svg viewBox="0 0 1200 100" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;" aria-hidden="true">
+    <rect width="1200" height="100" fill="#1b3d6e"/>
+    <polygon points="0,80 80,40 160,68 240,22 340,60 440,10 560,54 660,8 780,48 880,6 1000,44 1100,14 1200,36 1200,100 0,100" fill="#1e6632"/>
+    <polygon points="0,88 60,64 130,80 210,52 290,74 390,36 500,68 600,28 720,64 820,30 940,62 1040,38 1140,58 1200,46 1200,100 0,100" fill="#145228"/>
+    <polygon points="0,94 100,78 200,90 320,72 440,88 560,70 680,84 800,70 920,86 1040,72 1140,82 1200,76 1200,100 0,100" fill="#0d3d1e"/>
+    <ellipse cx="120" cy="32" rx="70" ry="26" fill="#c8dff0" opacity="0.18"/>
+    <ellipse cx="120" cy="28" rx="50" ry="18" fill="#e0eefa" opacity="0.14"/>
+    <ellipse cx="980" cy="24" rx="80" ry="28" fill="#c8dff0" opacity="0.16"/>
+    <ellipse cx="980" cy="20" rx="58" ry="20" fill="#e0eefa" opacity="0.12"/>
+    <rect x="860" y="68" width="160" height="24" rx="2" fill="#e8f0f8" opacity="0.88"/>
+    <rect x="875" y="62" width="134" height="10" rx="2" fill="#d0e0f0" opacity="0.85"/>
+    <rect x="896" y="54" width="96" height="12" rx="2" fill="#c0d4ec" opacity="0.82"/>
+    <rect x="918" y="46" width="56" height="11" rx="2" fill="#b0c8e8" opacity="0.78"/>
+    <rect x="860" y="92" width="160" height="4"  fill="#1b5e8a" opacity="0.5"/>
+  </svg>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SHIP BANNER
+════════════════════════════════════════════ -->
+<div class="ship-banner">
+  <div class="ship-text">
+    <i class="ti ti-ship" aria-hidden="true" style="font-size:12px;vertical-align:-1px;margin-right:6px;"></i>
+    Star Princess &nbsp;·&nbsp; Pier 91, Seattle &nbsp;·&nbsp; May 30 – June 7, 2025
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     COUNTDOWN
+════════════════════════════════════════════ -->
+<div class="countdown-bar">
+  <span class="countdown-text" id="countdown-text">Loading...</span>
+</div>
+
+<div class="hint">
+  <i class="ti ti-hand-click" aria-hidden="true" style="font-size:11px;vertical-align:-1px;margin-right:5px;"></i>
+  Tap a day to view the schedule, manage to-dos &amp; add notes
+</div>
+
+<!-- ═══════════════════════════════════════════
+     DAY SELECTOR
+════════════════════════════════════════════ -->
+<div class="days-row" id="days-row"></div>
+
+<!-- ═══════════════════════════════════════════
+     DETAIL PANEL
+════════════════════════════════════════════ -->
+<div class="detail-panel" id="detail-panel">
+  <div class="no-sel" id="no-sel">Select a day above to view its schedule, to-dos &amp; notes</div>
+  <div id="dp-content" style="display:none;">
+
+    <div class="dp-header">
+      <div class="dp-icon-big" id="dp-icon"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="dp-title"    id="dp-title"></div>
+        <div class="dp-subtitle" id="dp-subtitle"></div>
+      </div>
+      <div class="dp-progress-wrap">
+        <div class="dp-progress-label">To-dos</div>
+        <div class="dp-progress-num" id="dp-progress-num"></div>
+      </div>
+    </div>
+
+    <!-- Tab bar (visible on mobile only) -->
+    <div class="dp-tabs" role="tablist" aria-label="Day sections">
+      <button class="dp-tab active" data-tab="schedule" onclick="selectTab('schedule')">
+        <i class="ti ti-calendar-event" aria-hidden="true"></i> Schedule
+      </button>
+      <button class="dp-tab" data-tab="todos" onclick="selectTab('todos')">
+        <i class="ti ti-checkbox" aria-hidden="true"></i> To-Dos
+      </button>
+      <button class="dp-tab" data-tab="notes" onclick="selectTab('notes')">
+        <i class="ti ti-notes" aria-hidden="true"></i> Notes
+      </button>
+    </div>
+
+    <div class="dp-body">
+      <!-- Panel 1: Schedule + Packing -->
+      <div class="dp-panel" id="dp-panel-schedule">
+        <div class="section-head">
+          <i class="ti ti-calendar-event" aria-hidden="true" style="font-size:13px;"></i>Schedule
+        </div>
+        <div id="dp-events"></div>
+
+        <div class="section-head mt10">
+          <i class="ti ti-backpack" aria-hidden="true" style="font-size:13px;"></i>Pack / Bring
+        </div>
+        <div class="packing-tags" id="dp-packing"></div>
+      </div>
+
+      <!-- Panel 2: To-Dos -->
+      <div class="dp-panel" id="dp-panel-todos">
+        <div class="section-head">
+          <i class="ti ti-checkbox" aria-hidden="true" style="font-size:13px;"></i>To-Do List
+        </div>
+        <div class="todo-list" id="dp-todos"></div>
+        <div class="add-todo">
+          <input type="text" id="todo-input" placeholder="Add a to-do…" maxlength="100" />
+          <button onclick="addTodo()">Add</button>
+        </div>
+      </div>
+
+      <!-- Panel 3: Notes -->
+      <div class="dp-panel" id="dp-panel-notes">
+        <div class="section-head">
+          <i class="ti ti-notes" aria-hidden="true" style="font-size:13px;"></i>Notes
+        </div>
+        <textarea class="notes-area" id="notes-area"
+          placeholder="Jot down anything for this day — ideas, questions, reminders, what to wear…"></textarea>
+        <div class="save-indicator" id="save-indicator">
+          <i class="ti ti-check" style="font-size:9px;"></i> Saved
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     LEGEND + FOOTER
+════════════════════════════════════════════ -->
+<div class="leg-bar">
+  <div class="leg"><div class="ls" style="background:#1a6eb5;"></div>Travel</div>
+  <div class="leg"><div class="ls" style="background:#1e8c4a;"></div>On Board</div>
+  <div class="leg"><div class="ls" style="background:#6b3ec4;"></div>Excursion</div>
+  <div class="leg"><div class="ls" style="background:#c43e7a;"></div>Dinner</div>
+  <div class="leg"><div class="ls" style="background:#c48e00;"></div>Hotel / Misc</div>
+</div>
+<div class="footer">
+  <div class="fw">Explore</div>
+  <div class="fw">Relax</div>
+  <div class="fw">Enjoy</div>
+  <div class="fw">Unforgettable</div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/data.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

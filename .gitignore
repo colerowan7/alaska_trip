@@ -1,0 +1,4 @@
+node_modules/
+alaska-data.json
+.env
+.claude/
