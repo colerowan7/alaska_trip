@@ -1,0 +1,19 @@
+{
+  "name": "Alaska Cruise Planner",
+  "short_name": "Alaska 2025",
+  "description": "Star Princess · May 30–June 7, 2025 · Trip planner for the whole crew",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#1b3d6e",
+  "theme_color": "#1b3d6e",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

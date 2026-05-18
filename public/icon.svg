@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#1b3d6e"/>
+  <!-- Hull -->
+  <path d="M88 298 L424 298 L386 362 L126 362 Z" fill="#e8f4fd"/>
+  <!-- Main deck -->
+  <rect x="156" y="226" width="208" height="74" rx="6" fill="#e8f4fd"/>
+  <!-- Upper deck -->
+  <rect x="192" y="166" width="136" height="62" rx="6" fill="#e8f4fd"/>
+  <!-- Funnel -->
+  <rect x="242" y="116" width="42" height="52" rx="6" fill="#7ec8e3"/>
+  <rect x="237" y="108" width="52" height="16" rx="5" fill="#a8cfe8"/>
+  <!-- Portholes -->
+  <circle cx="194" cy="264" r="11" fill="#1b3d6e"/>
+  <circle cx="232" cy="264" r="11" fill="#1b3d6e"/>
+  <circle cx="270" cy="264" r="11" fill="#1b3d6e"/>
+  <circle cx="308" cy="264" r="11" fill="#1b3d6e"/>
+  <circle cx="346" cy="264" r="11" fill="#1b3d6e"/>
+  <!-- Waves -->
+  <path d="M60 366 Q124 348 188 366 Q252 384 316 366 Q380 348 452 366" stroke="#7ec8e3" stroke-width="11" stroke-linecap="round" fill="none"/>
+  <path d="M72 390 Q140 374 208 390 Q276 406 344 390 Q412 374 452 390" stroke="#4db8d8" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.55"/>
+</svg>
